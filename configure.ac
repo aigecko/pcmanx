@@ -67,6 +67,7 @@ AH_VERBATIM([USE_NOTIFIER],[#undef USE_NOTIFIER])
 AH_VERBATIM([USE_LIBNOTIFY],[#undef USE_LIBNOTIFY])
 AH_VERBATIM([USE_SCRIPT],[#undef USE_SCRIPT])
 AH_VERBATIM([USE_NANCY],[#undef USE_NANCY])
+AH_VERBATIM([USE_ANSI_EDITOR],[#undef USE_ANSI_EDITOR])
 AH_VERBATIM([USE_MOUSE],[#undef USE_MOUSE])
 AH_VERBATIM([USE_EXTERNAL], [#undef USE_EXTERNAL])
 AH_VERBATIM([USE_IPLOOKUP], [#undef USE_IPLOOKUP])
@@ -128,6 +129,11 @@ AC_ARG_ENABLE([nancy],
 	AS_HELP_STRING([--disable-nancy],
 		[disable nancy bot support (default: yes)]),
 	nancy=$enableval, nancy="yes")
+
+AC_ARG_ENABLE([ansi_editor],
+	AS_HELP_STRING([--disable-ansi-editor],
+		[disable ansi editor support (default: yes)]),
+	ansi_editor=$enableval, ansi_editor="yes")
 
 AC_ARG_ENABLE([mouse],
 	AS_HELP_STRING([--disable-mouse],
@@ -301,6 +307,17 @@ fi
 
 AM_CONDITIONAL(USE_NANCY, test "$nancy" = "yes")
 AC_SUBST(USE_NANCY)
+
+dnl *********************************************************************
+dnl ** ANSI Editor  *****************************************************
+dnl *********************************************************************
+
+if test "$ansi_editor" = "yes"; then
+    AC_DEFINE_UNQUOTED(USE_ANSI_EDITOR, [1], [Enable ANSIEditor support])
+fi
+
+AM_CONDITIONAL(USE_ANSI_EDITOR, test "$ansi_editor" = "yes")
+AC_SUBST(USE_ANSI_EDITOR)
 
 dnl *********************************************************************
 dnl ** Mouse Click and Wheel ********************************************
@@ -617,6 +634,7 @@ echo Docklet / system tray support ... : $docklet
 echo Popup notifier support........... : $notifier
 echo Libnotify support................ : $libnotify
 echo Nancy bot support ............... : $nancy
+echo ANSI editor support ............. : $ansi_editor
 echo Mouse click and wheel support ... : $mouse
 dnl if test "x$script" = "xyes"; then
 dnl   echo "Python script support............ : $script (Using Python $PYTHON_VERSION)"
