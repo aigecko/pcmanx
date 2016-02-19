@@ -34,7 +34,6 @@
 #include "telnetview.h"
 #include "notebook.h"
 #include "telnetcon.h"
-#include "editor.h"
 
 #include "inputdialog.h"
 #include "editfavdlg.h"
@@ -60,6 +59,10 @@
 
 #ifdef USE_SCRIPT
 #include "script/api.h"
+#endif
+
+#ifdef USE_ANSI_EDITOR
+#include "editor.h"
 #endif
 
 const gchar COLOR_BLOCK[] = "\u2588\u2588\u2588\u2588\u2588\u2588";
@@ -293,7 +296,9 @@ CTelnetCon* CMainFrame::NewCon(string title, string url, CSite* site )
 		site = &AppConfig.m_DefaultSite;
 
 	CTelnetCon* pCon;
+#ifdef USE_ANSI_EDITOR
 	CEditor* pEditor;
+#endif
 
 	/**
 	*   Since CEditor is extended from CTelnetCon and CEditorView extended from CTelnetView,
@@ -301,16 +306,20 @@ CTelnetCon* CMainFrame::NewCon(string title, string url, CSite* site )
 	*   Therefore, the differences only lie in the new instance part.
 	*   We use the magic url "ansi_editor" to identify if the Editor instance should be created or not.
 	*/
+#ifdef USE_ANSI_EDITOR
 	if(url == "ansi_editor"){
 		m_eView = new CEditorView;
 		pEditor = new CEditor( m_eView, *site);
 		pCon = pEditor;
 		m_pView = m_eView;
 	}else{
+#endif
 		m_pView = new CTelnetView;
 		pCon = new CTelnetCon( m_pView, *site );
+#ifdef USE_ANSI_EDITOR
 		pEditor = NULL;
 	}
+#endif
 	m_Views.push_back(m_pView);
 
 	m_pView->m_pTermData = pCon;
@@ -335,11 +344,15 @@ CTelnetCon* CMainFrame::NewCon(string title, string url, CSite* site )
 	m_pNotebook->SetCurPage(idx);
 	m_pView->SetFocus();
 
+#ifdef USE_ANSI_EDITOR
 	if(url == "ansi_editor"){
 		pEditor->EditorActions(CEditor::Init_Ansi_Editor);
 	}else{
+#endif
 		pCon->Connect();
+#ifdef USE_ANSI_EDITOR
 	}
+#endif
 
 	return pCon;
 }
@@ -416,6 +429,8 @@ static const char *ui_info =
   "      </menu>"
 #endif
   "    </menu>"
+
+#ifdef USE_ANSI_EDITOR
   "    <menu action='menu_ansi_editor'>"
   "      <menuitem action='openAnsiEditor'/>"
   "      <separator/>"
@@ -423,6 +438,7 @@ static const char *ui_info =
   "      <menuitem action='saveAnsiFile'/>"
   "      <menuitem action='clearScreen'/>"
   "    </menu>"
+#endif
   "    <menu action='help_menu'>"
   "      <menuitem action='shortcut_list'/>"
   "      <menuitem action='about'/>"
@@ -526,15 +542,19 @@ void CMainFrame::MakeUI()
 		{"cur_bot_menu", GTK_STOCK_EXECUTE, _("Bot (Current Connection)"), NULL, NULL, NULL},
 		{"all_bot_menu", GTK_STOCK_EXECUTE, _("Bot (All Opened Connections)"), NULL, NULL, NULL},
 	#endif
-		{"help_menu", NULL, _("_Help"), NULL, NULL, NULL},
-		{"shortcut_list", GTK_STOCK_DIALOG_INFO,  _("_Shortcut List"), NULL, NULL, G_CALLBACK (CMainFrame::OnShortcutList)},
-		{"about", GTK_STOCK_ABOUT, NULL, NULL, _("About"), G_CALLBACK (CMainFrame::OnAbout)},
-		// Ansi Editor Menu
+
+	#ifdef USE_ANSI_EDITOR
+        // Ansi Editor Menu
 		{"menu_ansi_editor", NULL, _("Ansi Editor"), NULL, NULL, NULL},
 		{"openAnsiEditor", NULL, _("Open Ansi Editor"), NULL, NULL, G_CALLBACK (CMainFrame::OnAnsiEditor)},
 		{"openAnsiFile", NULL, _("Open Ansi File"), NULL, NULL, G_CALLBACK (CMainFrame::OnOpenAnsiFile)},
 		{"saveAnsiFile", NULL, _("Save Ansi File"), NULL, NULL, G_CALLBACK (CMainFrame::OnSaveAnsiFile)},
-		{"clearScreen", NULL, _("Clear Screen"), NULL, NULL, G_CALLBACK (CMainFrame::OnClearScreen)}
+		{"clearScreen", NULL, _("Clear Screen"), NULL, NULL, G_CALLBACK (CMainFrame::OnClearScreen)},
+    #endif
+
+		{"help_menu", NULL, _("_Help"), NULL, NULL, NULL},
+		{"shortcut_list", GTK_STOCK_DIALOG_INFO,  _("_Shortcut List"), NULL, NULL, G_CALLBACK (CMainFrame::OnShortcutList)},
+		{"about", GTK_STOCK_ABOUT, NULL, NULL, _("About"), G_CALLBACK (CMainFrame::OnAbout)}
 	  };
 
 		//move m_ToggleActionEntries from class member to local
@@ -628,6 +648,7 @@ void CMainFrame::MakeUI()
 		m_JumpTos[i-1] = G_OBJECT(action);
 	}
 
+#ifdef USE_ANSI_EDITOR
 	// Ansi Editor widget: blink check box, click to set the text blink.
 	m_chkBlink = gtk_check_button_new_with_label("blink");
 	GtkToolItem *itemBlink = gtk_tool_item_new();
@@ -696,6 +717,8 @@ void CMainFrame::MakeUI()
 	GtkWidget* sep = (GtkWidget*)gtk_separator_tool_item_new();
 	gtk_widget_show(sep);
 	gtk_container_add (GTK_CONTAINER (m_Toolbar), sep);
+#endif
+
 	// Create the URL address bar
 	GtkWidget* url_bar = gtk_hbox_new (FALSE, 0);
 	GtkWidget* url_label = (GtkWidget*) gtk_label_new_with_mnemonic(_("A_ddress:"));
@@ -723,10 +746,12 @@ void CMainFrame::MakeUI()
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(m_ActionGroup, "toolbar")), AppConfig.ShowToolbar);
 	gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(m_ActionGroup, "statusbar")), AppConfig.ShowStatusBar);
 
+#ifdef USE_ANSI_EDITOR
 	// Ansi Editor widget events
 	g_signal_connect(GTK_OBJECT(m_cbTextColor), "changed", G_CALLBACK(SetTextColor), this);
 	g_signal_connect(GTK_OBJECT(m_cbBgColor), "changed", G_CALLBACK(SetBgColor), this);
 	g_signal_connect(GTK_OBJECT(m_chkBlink), "toggled", G_CALLBACK(SetBlink), this);
+#endif
 
 	CreateFavoritesMenu();
 	CreateTrayIcon();
@@ -1927,11 +1952,12 @@ void CMainFrame::UpdateBotStatus()
 /* vim: set fileencodings=utf-8 tabstop=4 noexpandtab shiftwidth=4 softtabstop=4: */
 
 
-
+#ifdef USE_ANSI_EDITOR
 /**
 *   Open Ansi Editor. Send url string "ansi_editor" to NewCon().
 *   The NewCon() method will create CEditor object when the url is "ansi_editor".
 */
+
 void CMainFrame::OnAnsiEditor(GtkMenuItem *mitem, CMainFrame *_this)
 {
 	_this->NewCon("Ansi Editor", "ansi_editor");
@@ -1992,7 +2018,6 @@ void CMainFrame::OnSaveAnsiFile(GtkMenuItem *mitem, CMainFrame *_this)
 	}
 	gtk_widget_destroy (dialog);
 }
-
 void CMainFrame::OnClearScreen(GtkMenuItem *mitem, CMainFrame *_this)
 {
 	//do nothing if the current view is not Ansi Editor
@@ -2002,7 +2027,6 @@ void CMainFrame::OnClearScreen(GtkMenuItem *mitem, CMainFrame *_this)
 	_this->GetCurEditor()->EditorActions(CEditor::Clear_Screen);
 	_this->GetCurEditorView()->UpdateEditor();
 }
-
 /**
 *   Set text to blink.
 */
@@ -2107,3 +2131,4 @@ void CMainFrame::ParseColor(GdkColor *color, gchar *res, size_t res_len)
 	res[6] = color_present[10];
 	res[7] = 0;
 }
+#endif

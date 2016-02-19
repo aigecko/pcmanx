@@ -139,6 +139,7 @@ protected:
     // Mouse Cursor State for Click Behaviour
     // Hand=-1, Normal=0, Exit=1, BullsEye=2, PageDown=3, PageUp=4, End=5, Home=6
     static int m_CursorState;
+
 };
 
 #endif
