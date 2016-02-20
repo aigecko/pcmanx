@@ -42,6 +42,7 @@
 #include "appconfig.h"
 #include "sitelistdlg.h"
 #include "emoticondlg.h"
+#include "blistcondlg.h"
 #include "downarticledlg.h"
 
 #include <sys/types.h>
@@ -398,6 +399,7 @@ static const char *ui_info =
   "      <menuitem action='down_article'/>"
   "      <separator/>"
   "      <menuitem action='emoticon'/>"
+  "      <menuitem action='blacklist'/>"
   "      <menuitem action='preference'/>"
   "    </menu>"
   "    <menu action='favorites_menu'>"
@@ -531,6 +533,7 @@ void CMainFrame::MakeUI()
 		{"down_article", GTK_STOCK_SELECT_ALL, _("_Download Article"), NULL, _("Download Article"), G_CALLBACK (CMainFrame::OnDownArticle)},
 		{"select_all", NULL, _("Select A_ll"), NULL, NULL, G_CALLBACK (CMainFrame::OnSelectAll)},
 		{"emoticon", NULL, _("_Emoticons"), AppConfig.keyEmotions.data(), NULL, G_CALLBACK (CMainFrame::OnEmoticons)},
+		{"blacklist", NULL, _("_Blacklist"), NULL, NULL, G_CALLBACK (CMainFrame::OnBlacklist)},
 		{"preference", GTK_STOCK_PREFERENCES, _("_Preference"), NULL, _("Preference"), G_CALLBACK (CMainFrame::OnPreference)},
 		{"favorites_menu", NULL, _("F_avorites"), NULL, NULL, NULL},
 		{"add_to_fav", GTK_STOCK_ADD, _("_Add to Favorites"), NULL, _("Add to Favorites"), G_CALLBACK (CMainFrame::OnAddToFavorites)},
@@ -1780,6 +1783,14 @@ void CMainFrame::OnEmoticons(GtkMenuItem* mitem UNUSED, CMainFrame* _this)
 	}
 	dlg->Destroy();
 }
+
+void CMainFrame::OnBlacklist(GtkMenuItem* mitem UNUSED, CMainFrame* _this)
+{
+	CBlistconDlg* dlg = new CBlistconDlg(_this);
+	dlg->ShowModal();
+	dlg->Destroy();
+}
+
 
 void CMainFrame::OnReconnect(GtkMenuItem* mitem UNUSED, CMainFrame* _this)
 {

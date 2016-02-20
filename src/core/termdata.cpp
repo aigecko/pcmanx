@@ -746,6 +746,7 @@ void CTermData::UpdateDisplay()
 {
 	DetectCharSets();
 	DetectHyperLinks();
+	DetectBlackLists();
 #ifdef USE_IPLOOKUP
 	DetectIpAddrs();
 #endif
@@ -970,7 +971,33 @@ void CTermData::DetectHyperLinks()
 		DetectCommonURLs( line, attr, m_ColsPerPage );	// Search for URLs other than E-mail.
 	}
 }
+//2016/02/20 add by AIGecko
+//This function is used to detect whether sentences are owned by who in black list.
+//Called from UpdateDisplay().
+void CTermData::DetectBlackLists()
+{
+	int iline = m_FirstLine;
+	int ilast_line = iline + m_RowsPerPage;
+	for( ; iline < ilast_line ; iline++ )
+	{
+		char *line = m_Screen[iline];
+		CTermCharAttr* attr = GetLineAttr( line );
 
+		//0xC0B1 is ptt push
+		//0xF7A1 is ptt ->
+		//0x4EBC is ptt boo
+		int line_head_char = *((int*)line) & 0xFFFF;
+		if( line[2] == ' ' &&
+			( line_head_char == 0xC0B1 ||
+			  line_head_char == 0xF7A1 ||
+			  line_head_char == 0x4EBC ))
+		{
+			for( int col = 0; col < m_ColsPerPage; col ++ ){
+				attr[col].SetForeground(0);
+			}
+		}
+	}
+}
 #ifdef USE_IPLOOKUP
 
 /* detect ipv4 addresses. */

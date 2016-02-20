@@ -222,6 +222,7 @@ public:
 	string GetLineWithColor( char* pLine, int start, int end );
 	void DetectCharSets();
 	void DetectHyperLinks();
+	void DetectBlackLists();
 #ifdef USE_IPLOOKUP
 	void DetectIpAddrs();
 #endif

@@ -102,6 +102,7 @@ public:
 	static void OnEditFavorites(GtkMenuItem* widget, CMainFrame* _this);
 	static void OnFavorite(GtkMenuItem* item, CMainFrame* _this);
 	static void OnEmoticons(GtkMenuItem* mitem, CMainFrame* _this);
+	static void OnBlacklist(GtkMenuItem* mitem, CMainFrame* _this);
 	static gboolean OnActivated( GtkWidget* widget, GdkEventFocus* evt, CMainFrame* _this );
 
 	bool IsActivated(){	return gtk_window_is_active(GTK_WINDOW(m_Widget));	}
