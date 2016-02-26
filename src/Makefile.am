@@ -39,6 +39,9 @@ OPTIONAL_NANCY = \
 	nancy_bot/msgdata.h \
 	nancy_bot/botutil.h
 
+OPTIONAL_ANSI_EDITOR = 
+	view/editor.cpp view/editor.h \
+
 EXTRA_DIST = \
 	$(OPTIONAL_DOCKLET) \
 	$(OPTIONAL_NOTIFIER) \
@@ -64,7 +67,6 @@ endif
 VIEW_IMPLEMENTATION_SOURCES = \
 	view/telnetcon.cpp view/telnetcon.h \
 	view/telnetview.cpp view/telnetview.h \
-	view/editor.cpp view/editor.h \
 	view/editorview.cpp view/editorview.h
 
 if USE_IPLOOKUP

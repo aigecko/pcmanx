@@ -39,10 +39,10 @@ public:
     void SaveBlacklists();
     bool OnCancel();
     static void OnListRowActivated(GtkTreeView* view, GtkTreePath* path, GtkTreeViewColumn* cols, CBlistconDlg* _this);
-    CListBox* m_List;
 protected:
     string m_SelStr;
     bool m_IsModified;
+    CListBox* m_List;
 protected:
     static gboolean SaveBlacklist(GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* iter, FILE* file);
 };

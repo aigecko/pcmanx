@@ -974,6 +974,26 @@ void CTermData::DetectHyperLinks()
 //2016/02/20 add by AIGecko
 //This function is used to detect whether sentences are owned by who in black list.
 //Called from UpdateDisplay().
+gboolean CTermData::DetectBlacklist(GtkTreeModel* model,
+                                    GtkTreePath* path UNUSED, GtkTreeIter* iter,
+                                    CFuncParam* param)
+{
+	gchar* text = NULL;
+	gtk_tree_model_get( model, iter, 0, &text, -1 );
+	if( text )
+	{
+		//printf("cmp:%s_%s\n",text,param->str);
+		if( !strncmp( text, param->str, strlen(text) ) ){
+			g_free(text);
+			param->found=true;
+			return true;
+		}
+		g_free(text);
+	}
+	return false;
+}
+
+
 void CTermData::DetectBlackLists()
 {
 	int iline = m_FirstLine;
@@ -992,8 +1012,17 @@ void CTermData::DetectBlackLists()
 			  line_head_char == 0xF7A1 ||
 			  line_head_char == 0x4EBC ))
 		{
-			for( int col = 0; col < m_ColsPerPage; col ++ ){
-				attr[col].SetForeground(0);
+			CFuncParam param;
+			param.found = false;
+			param.str = line+3;
+
+			GtkTreeModel* model = CMainFrame::m_blist->GetTreeModel();
+			gtk_tree_model_foreach( model,
+				(GtkTreeModelForeachFunc)CTermData::DetectBlacklist , &param );
+			if( param.found ){
+				for( int col = 0; col < m_ColsPerPage; col ++ ){
+					attr[col].SetForeground(0);
+				}
 			}
 		}
 	}

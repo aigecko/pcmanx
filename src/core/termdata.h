@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include "termsel.h"
+#include "mainframe.h"
 
 #include <string>
 
@@ -174,6 +175,13 @@ class CTermView;
 
 class X_EXPORT CTermData
 {
+	class CFuncParam
+	{
+	public:
+		char* str;
+		gboolean found;
+	};
+
 public:
 	//Detect if the specified line is empty.
 	bool IsLineEmpty( int iLine );
@@ -222,6 +230,9 @@ public:
 	string GetLineWithColor( char* pLine, int start, int end );
 	void DetectCharSets();
 	void DetectHyperLinks();
+	static gboolean DetectBlacklist(GtkTreeModel* model,
+							 GtkTreePath* path UNUSED,
+							 GtkTreeIter* iter, CFuncParam* param);
 	void DetectBlackLists();
 #ifdef USE_IPLOOKUP
 	void DetectIpAddrs();

@@ -194,7 +194,9 @@ void CBlistconDlg::SaveBlacklists()
 bool CBlistconDlg::OnCancel()
 {
 	if( m_IsModified )
+	{
 		SaveBlacklists();
+	}
 
 	return CDialog::OnCancel();
 }

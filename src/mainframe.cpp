@@ -67,6 +67,7 @@
 #endif
 
 const gchar COLOR_BLOCK[] = "\u2588\u2588\u2588\u2588\u2588\u2588";
+CListBox* CMainFrame::m_blist=NULL;
 
 #ifdef USE_DOCKLET
 #include "docklet/api.h"
@@ -277,6 +278,9 @@ CMainFrame::CMainFrame()
 	if(AppConfig.ShowInSimpleMode){
 		gtk_toggle_action_set_active(GTK_TOGGLE_ACTION(gtk_action_group_get_action(m_ActionGroup, "simple")), true);
 	}
+
+	m_blist=new CListBox;
+	LoadBlacklists();
 }
 
 
@@ -1784,11 +1788,35 @@ void CMainFrame::OnEmoticons(GtkMenuItem* mitem UNUSED, CMainFrame* _this)
 	dlg->Destroy();
 }
 
+void CMainFrame::LoadBlacklists()
+{
+	static char blacklist_file_name[]="blacklist";
+
+	delete m_blist;
+	m_blist=new CListBox;
+
+	string fpath = AppConfig.GetConfigPath( blacklist_file_name );
+	if( !g_file_test( fpath.c_str(), G_FILE_TEST_EXISTS ) )
+		fpath = AppConfig.GetDataPath( blacklist_file_name );
+	FILE* fi = fopen( fpath.c_str() ,"r" );
+	if( fi )
+	{
+		char line[1024];
+		while( fgets( line, sizeof(line), fi ) )
+		{
+			char* blacklist = strtok(line, "\r\n");
+			m_blist->Append( blacklist );
+		}
+		fclose(fi);
+	}
+}
+
 void CMainFrame::OnBlacklist(GtkMenuItem* mitem UNUSED, CMainFrame* _this)
 {
 	CBlistconDlg* dlg = new CBlistconDlg(_this);
 	dlg->ShowModal();
 	dlg->Destroy();
+	LoadBlacklists();
 }
 
 

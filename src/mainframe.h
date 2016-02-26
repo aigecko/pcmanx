@@ -39,6 +39,7 @@ using namespace std;
 
 #include "telnetview.h"
 #include "editorview.h"
+#include "listbox.h"
 #include <signal.h>
 
 /**
@@ -103,6 +104,7 @@ public:
 	static void OnFavorite(GtkMenuItem* item, CMainFrame* _this);
 	static void OnEmoticons(GtkMenuItem* mitem, CMainFrame* _this);
 	static void OnBlacklist(GtkMenuItem* mitem, CMainFrame* _this);
+	static void LoadBlacklists();
 	static gboolean OnActivated( GtkWidget* widget, GdkEventFocus* evt, CMainFrame* _this );
 
 	bool IsActivated(){	return gtk_window_is_active(GTK_WINDOW(m_Widget));	}
@@ -134,6 +136,7 @@ public:
 	  return gtk_statusbar_pop(GTK_STATUSBAR(m_Statusbar), context_id);
 	}
 
+	static CListBox* m_blist;
 protected:
 	void MakeUI();
 	static void OnNewCon(GtkMenuItem* mitem, CMainFrame* _this);
@@ -186,7 +189,6 @@ protected:
 	GdkPixbuf* m_ConnIcon;
 	GdkPixbuf* m_MainIcon;
 	GdkPixbuf* m_InverseMainIcon;
-
 protected:
 	CTelnetView* m_pView;
 	CEditorView* m_eView;
@@ -227,7 +229,6 @@ protected:
 	static CMainFrame* g_pMyself;
 	static GtkActionEntry m_ActionEntries[];
 	static GtkToggleActionEntry m_ToggleActionEntries[];
-
 private:
 	enum {NORMAL_MODE, FULLSCREEN_MODE, SIMPLE_MODE} m_Mode;
 	lt_dlhandle m_dlhandle;
