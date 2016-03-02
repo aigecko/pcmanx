@@ -983,7 +983,8 @@ gboolean CTermData::DetectBlacklist(GtkTreeModel* model,
 	if( text )
 	{
 		//printf("cmp:%s_%s\n",text,param->str);
-		if( !strncmp( text, param->str, strlen(text) ) ){
+		int length = strlen( text );
+		if( param->str[length] == ':' && !strncmp( text, param->str, length ) ){
 			g_free(text);
 			param->found=true;
 			return true;
@@ -1022,6 +1023,7 @@ void CTermData::DetectBlackLists()
 			if( param.found ){
 				for( int col = 0; col < m_ColsPerPage; col ++ ){
 					attr[col].SetForeground(0);
+
 				}
 			}
 		}

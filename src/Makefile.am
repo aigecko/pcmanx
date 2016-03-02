@@ -39,14 +39,16 @@ OPTIONAL_NANCY = \
 	nancy_bot/msgdata.h \
 	nancy_bot/botutil.h
 
-OPTIONAL_ANSI_EDITOR = 
-	view/editor.cpp view/editor.h \
+OPTIONAL_ANSI_EDITOR = \
+	view/editorview.cpp view/editorview.h \
+	view/editor.cpp view/editor.h
 
 EXTRA_DIST = \
 	$(OPTIONAL_DOCKLET) \
 	$(OPTIONAL_NOTIFIER) \
 	$(OPTIONAL_SCRIPT) \
-	$(OPTIONAL_NANCY)
+	$(OPTIONAL_NANCY) \
+	$(OPTIONAL_ANSI_EDITOR)
 
 if USE_DOCKLET
 DOCKLET_SOURCES = $(OPTIONAL_DOCKLET)
@@ -64,10 +66,13 @@ if USE_NANCY
 NANCY_SOURCES = $(OPTIONAL_NANCY)
 endif
 
+if USE_ANSI_EDITOR
+ANSI_EDITOR_SOURCES = $(OPTIONAL_ANSI_EDITOR)
+endif
+
 VIEW_IMPLEMENTATION_SOURCES = \
 	view/telnetcon.cpp view/telnetcon.h \
-	view/telnetview.cpp view/telnetview.h \
-	view/editorview.cpp view/editorview.h
+	view/telnetview.cpp view/telnetview.h
 
 if USE_IPLOOKUP
 QQWRYSEEKER_SOURCES = \
@@ -80,6 +85,7 @@ pcmanx_SOURCES = \
 	$(SCRIPT_SOURCES) \
 	$(NANCY_SOURCES) \
 	$(VIEW_IMPLEMENTATION_SOURCES) \
+	$(ANSI_EDITOR_SOURCES) \
 	$(QQWRYSEEKER_SOURCES) \
 	appconfig.cpp appconfig.h \
 	notebook.cpp notebook.h \

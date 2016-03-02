@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: zh_TW\n"
 "Report-Msgid-Bugs-To: http://groups.google.com/group/PCManX\n"
 "POT-Creation-Date: 2016-02-21 02:43+0800\n"
-"PO-Revision-Date: 2016-02-27 00:47+0800\n"
+"PO-Revision-Date: 2016-02-27 01:04+0800\n"
 "Last-Translator: Jim Huang <jserv.tw@gmail.com>\n"
 "Language-Team:  <zh@li.org>\n"
 "Language: zh_TW\n"
@@ -163,7 +163,7 @@ msgstr "表情符號 (_E)"
 
 #: ../src/mainframe.cpp:536
 msgid "_Blacklist"
-msgstr ""
+msgstr "黑名單"
 
 #: ../src/mainframe.cpp:537
 msgid "_Preference"
