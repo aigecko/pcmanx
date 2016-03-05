@@ -984,7 +984,9 @@ gboolean CTermData::DetectBlacklist(GtkTreeModel* model,
 	{
 		//printf("cmp:%s_%s\n",text,param->str);
 		int length = strlen( text );
-		if( param->str[length] == ':' && !strncmp( text, param->str, length ) ){
+		char end_char = param->str[length];
+		if( ( end_char == ':' || end_char == ' ' ) && !strncmp( text, param->str, length ))
+		{
 			g_free(text);
 			param->found=true;
 			return true;
@@ -1023,7 +1025,24 @@ void CTermData::DetectBlackLists()
 			if( param.found ){
 				for( int col = 0; col < m_ColsPerPage; col ++ ){
 					attr[col].SetForeground(0);
+					attr[col].SetNeedUpdate(true);
+				}
+			}
+		}
+		else if( line[7] == ' ' && line[13] == '/')
+		{
+			CFuncParam param;
+			param.found = false;
+			param.str = line+17;
 
+			GtkTreeModel* model = CMainFrame::m_blist->GetTreeModel();
+			gtk_tree_model_foreach( model,
+				(GtkTreeModelForeachFunc)CTermData::DetectBlacklist , &param );
+			if( param.found ){
+				for( int col = 0; col < m_ColsPerPage; col ++ ){
+					attr[col].SetForeground(0);
+					attr[col].SetBright(true);
+					attr[col].SetNeedUpdate(true);
 				}
 			}
 		}
