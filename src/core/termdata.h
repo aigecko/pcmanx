@@ -141,6 +141,10 @@ class CTermCharAttr
 	GdkColor* GetBgColor(GdkColor* pColorTable ){
 		return &pColorTable[( m_Inverse ? m_Fg : m_Bg )];
 	}
+	//Get the color of invisible attribute.
+	GdkColor* GetNoColor(GdkColor* pColorTable ){
+		return &pColorTable[ 8 ];
+	}
 
 	// Overloaded operator ==
 	bool operator==(CTermCharAttr& attr);

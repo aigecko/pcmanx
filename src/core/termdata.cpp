@@ -1006,6 +1006,12 @@ void CTermData::DetectBlackLists()
 		char *line = m_Screen[iline];
 		CTermCharAttr* attr = GetLineAttr( line );
 
+		for( int col = 0; col < m_ColsPerPage; col ++ ){
+            if( attr[col].IsInvisible())
+                attr[col].SetNeedUpdate(true);
+			attr[col].SetInvisible(false);
+		}
+
 		//0xC0B1 is ptt push
 		//0xF7A1 is ptt ->
 		//0x4EBC is ptt boo
@@ -1024,7 +1030,7 @@ void CTermData::DetectBlackLists()
 				(GtkTreeModelForeachFunc)CTermData::DetectBlacklist , &param );
 			if( param.found ){
 				for( int col = 0; col < m_ColsPerPage; col ++ ){
-					attr[col].SetForeground(0);
+					attr[col].SetInvisible(true);
 					attr[col].SetNeedUpdate(true);
 				}
 			}
@@ -1040,8 +1046,7 @@ void CTermData::DetectBlackLists()
 				(GtkTreeModelForeachFunc)CTermData::DetectBlacklist , &param );
 			if( param.found ){
 				for( int col = 0; col < m_ColsPerPage; col ++ ){
-					attr[col].SetForeground(0);
-					attr[col].SetBright(true);
+					attr[col].SetInvisible(true);
 					attr[col].SetNeedUpdate(true);
 				}
 			}

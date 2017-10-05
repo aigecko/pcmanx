@@ -421,9 +421,18 @@ int CTermView::DrawChar(int row, int col)
 
 	for( int i = 0; i < loop_times; i++ )	//	do the drawing
 	{
-		GdkColor* Fg = pAttr[i].GetFgColor( m_pColorTable );
-		GdkColor* Bg = pAttr[i].GetBgColor( m_pColorTable );
-		// if it's property is inverse, GetFgColor & GetBgColor will swap Bg & Fg for us.
+	    GdkColor *Fg,*Bg;
+	    if( pAttr[i].IsInvisible() )
+        {
+            Fg = pAttr[i].GetNoColor( m_pColorTable );
+            Bg = pAttr[i].GetBgColor( m_pColorTable );
+        }
+        else
+        {
+            Fg = pAttr[i].GetFgColor( m_pColorTable );
+            Bg = pAttr[i].GetBgColor( m_pColorTable );
+            // if it's property is inverse, GetFgColor & GetBgColor will swap Bg & Fg for us.
+        }
 
 		if( bSel[i] )	// if it's selected, reverse two colors.
 		{
